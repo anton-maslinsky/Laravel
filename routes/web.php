@@ -12,11 +12,21 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+use \App\Http\Controllers\NewsController;
+use \App\Http\Controllers\Admin\AdminCategoryController;
+use \App\Http\Controllers\Admin\AdminNewsController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('news', function (){
-   return view('news');
+Route::group(['prefix' => 'admin'], function () {
+    Route::resource('categories', AdminCategoryController::class);
+    Route::resource('news', AdminNewsController::class);
 });
+
+Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+Route::get('/news/{id}', [NewsController::class, 'show'])
+    ->where('id', '\d+')
+    ->name('news.show');
+
